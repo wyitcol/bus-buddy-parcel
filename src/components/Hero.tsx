@@ -19,18 +19,18 @@ const Hero = () => {
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full text-sm font-medium mb-6 animate-fade-in">
             <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
-            Fast & Reliable Parcel Delivery
+            Tahmeed • Buscar • Mashpoa
           </div>
           
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
             Send Parcels Across
-            <span className="block text-secondary">The Country</span>
+            <span className="block text-secondary">Kenya</span>
             Via Bus Services
           </h1>
           
           <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Affordable, fast, and reliable parcel transportation using our nationwide bus network. 
-            Your package reaches its destination safely.
+            Affordable, fast, and reliable parcel transportation using Kenya's top bus operators. 
+            From Nairobi to Mombasa, Kisumu to Eldoret - your package arrives safely.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in" style={{ animationDelay: "0.3s" }}>
