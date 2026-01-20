@@ -5,7 +5,7 @@ const plans = [
   {
     name: "Standard",
     description: "For occasional senders",
-    price: "UGX 500",
+    price: "KES 50",
     unit: "/kg",
     features: [
       "Up to 20kg per parcel",
@@ -19,7 +19,7 @@ const plans = [
   {
     name: "Express",
     description: "For urgent deliveries",
-    price: "UGX 800",
+    price: "KES 80",
     unit: "/kg",
     features: [
       "Up to 50kg per parcel",

@@ -61,10 +61,10 @@ const TrackParcel = () => {
               {/* Timeline */}
               <div className="space-y-6">
                 {[
-                  { status: "Delivered", location: "Kampala Central Terminal", time: "Expected: Today, 4:00 PM", active: false, completed: false },
-                  { status: "In Transit", location: "En route to Kampala", time: "Today, 10:30 AM", active: true, completed: false },
-                  { status: "Departed", location: "Mbarara Bus Terminal", time: "Today, 6:00 AM", active: false, completed: true },
-                  { status: "Received", location: "Mbarara Bus Terminal", time: "Yesterday, 5:45 PM", active: false, completed: true },
+                  { status: "Delivered", location: "Nairobi CBD Terminal", time: "Expected: Today, 4:00 PM", active: false, completed: false },
+                  { status: "In Transit", location: "En route via Tahmeed Bus", time: "Today, 10:30 AM", active: true, completed: false },
+                  { status: "Departed", location: "Mombasa Bus Terminal", time: "Today, 6:00 AM", active: false, completed: true },
+                  { status: "Received", location: "Mombasa Bus Terminal", time: "Yesterday, 5:45 PM", active: false, completed: true },
                 ].map((item, index) => (
                   <div key={index} className="flex gap-4">
                     <div className="flex flex-col items-center">
