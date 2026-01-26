@@ -14,16 +14,138 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      parcels: {
+        Row: {
+          bus_operator: Database["public"]["Enums"]["bus_operator"]
+          created_at: string
+          destination_city: string
+          id: string
+          notes: string | null
+          origin_city: string
+          receiver_address: string
+          receiver_name: string
+          receiver_phone: string
+          sender_address: string
+          sender_name: string
+          sender_phone: string
+          sender_user_id: string | null
+          status: Database["public"]["Enums"]["parcel_status"]
+          tracking_id: string
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          bus_operator: Database["public"]["Enums"]["bus_operator"]
+          created_at?: string
+          destination_city: string
+          id?: string
+          notes?: string | null
+          origin_city: string
+          receiver_address: string
+          receiver_name: string
+          receiver_phone: string
+          sender_address: string
+          sender_name: string
+          sender_phone: string
+          sender_user_id?: string | null
+          status?: Database["public"]["Enums"]["parcel_status"]
+          tracking_id: string
+          updated_at?: string
+          weight: number
+        }
+        Update: {
+          bus_operator?: Database["public"]["Enums"]["bus_operator"]
+          created_at?: string
+          destination_city?: string
+          id?: string
+          notes?: string | null
+          origin_city?: string
+          receiver_address?: string
+          receiver_name?: string
+          receiver_phone?: string
+          sender_address?: string
+          sender_name?: string
+          sender_phone?: string
+          sender_user_id?: string | null
+          status?: Database["public"]["Enums"]["parcel_status"]
+          tracking_id?: string
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_tracking_id: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      bus_operator: "tahmeed" | "buscar" | "mashpoa"
+      parcel_status:
+        | "pending"
+        | "received"
+        | "in_transit"
+        | "delivered"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +272,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      bus_operator: ["tahmeed", "buscar", "mashpoa"],
+      parcel_status: [
+        "pending",
+        "received",
+        "in_transit",
+        "delivered",
+        "cancelled",
+      ],
+    },
   },
 } as const
