@@ -33,11 +33,15 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost">Sign In</Button>
-            <Button>
-              <Package className="w-4 h-4" />
-              Send Parcel
-            </Button>
+            <a href="/auth">
+              <Button variant="ghost">Sign In</Button>
+            </a>
+            <a href="/admin">
+              <Button>
+                <Package className="w-4 h-4" />
+                Send Parcel
+              </Button>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -66,11 +70,15 @@ const Navbar = () => {
                 Pricing
               </a>
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="ghost" className="w-full">Sign In</Button>
-                <Button className="w-full">
-                  <Package className="w-4 h-4" />
-                  Send Parcel
-                </Button>
+                <a href="/auth">
+                  <Button variant="ghost" className="w-full">Sign In</Button>
+                </a>
+                <a href="/admin">
+                  <Button className="w-full">
+                    <Package className="w-4 h-4" />
+                    Send Parcel
+                  </Button>
+                </a>
               </div>
             </div>
           </div>
