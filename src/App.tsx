@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import ConceptPaper from "./pages/ConceptPaper";
 import Chapter1 from "./pages/Chapter1";
 import Chapter2 from "./pages/Chapter2";
+import Chapter3 from "./pages/Chapter3";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/concept-paper" element={<ConceptPaper />} />
             <Route path="/chapter-1" element={<Chapter1 />} />
             <Route path="/chapter-2" element={<Chapter2 />} />
+            <Route path="/chapter-3" element={<Chapter3 />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
