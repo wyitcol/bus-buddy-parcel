@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import ConceptPaper from "./pages/ConceptPaper";
+import Proposal from "./pages/Proposal";
 import Chapter1 from "./pages/Chapter1";
 import Chapter2 from "./pages/Chapter2";
 import Chapter3 from "./pages/Chapter3";
