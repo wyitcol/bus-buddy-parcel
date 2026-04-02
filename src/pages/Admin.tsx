@@ -333,8 +333,9 @@ const Admin = () => {
                   <TableHead>Receiver</TableHead>
                   <TableHead>Route</TableHead>
                   <TableHead>Operator</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                   <TableHead>Status</TableHead>
+                   <TableHead>Payment</TableHead>
+                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
