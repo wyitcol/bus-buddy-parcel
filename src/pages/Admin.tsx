@@ -37,7 +37,7 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingParcel, setEditingParcel] = useState<Parcel | null>(null);
-
+  const [paymentParcel, setPaymentParcel] = useState<{ id: string; trackingId: string; amount: number } | null>(null);
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth");
