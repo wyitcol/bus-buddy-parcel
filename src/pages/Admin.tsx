@@ -89,7 +89,13 @@ const Admin = () => {
       sender_user_id: user?.id ?? null,
     };
 
-    const { error } = await supabase.from("parcels").insert(newParcel);
+    const weight = parseFloat(formData.get("weight") as string);
+    const paymentAmount = 200 + weight * 50; // KES 200 base + KES 50/kg
+
+    const { data, error } = await supabase.from("parcels").insert({
+      ...newParcel,
+      payment_amount: paymentAmount,
+    }).select().single();
 
     if (error) {
       toast({
@@ -97,15 +103,19 @@ const Admin = () => {
         description: error.message,
         variant: "destructive",
       });
-    } else {
+    } else if (data) {
       toast({
         title: "Parcel created",
-        description: "The parcel has been added successfully.",
+        description: "Now proceed to payment.",
       });
       setIsCreateOpen(false);
+      setPaymentParcel({
+        id: data.id,
+        trackingId: data.tracking_id,
+        amount: paymentAmount,
+      });
       fetchParcels();
     }
-  };
 
   const handleUpdateStatus = async (parcelId: string, newStatus: ParcelStatus) => {
     const { error } = await supabase
