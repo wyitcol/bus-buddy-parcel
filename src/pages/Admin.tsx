@@ -9,11 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Bus, Package, LogOut, Plus, Search, RefreshCw, Edit } from "lucide-react";
+import { Bus, Package, LogOut, Plus, Search, RefreshCw, Edit, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from "@/integrations/supabase/types";
+import MpesaPaymentDialog from "@/components/MpesaPaymentDialog";
 
 type Parcel = Database["public"]["Tables"]["parcels"]["Row"];
 type ParcelStatus = Database["public"]["Enums"]["parcel_status"];
@@ -36,7 +37,7 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingParcel, setEditingParcel] = useState<Parcel | null>(null);
-
+  const [paymentParcel, setPaymentParcel] = useState<{ id: string; trackingId: string; amount: number } | null>(null);
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth");
@@ -88,7 +89,13 @@ const Admin = () => {
       sender_user_id: user?.id ?? null,
     };
 
-    const { error } = await supabase.from("parcels").insert(newParcel);
+    const weight = parseFloat(formData.get("weight") as string);
+    const paymentAmount = 200 + weight * 50; // KES 200 base + KES 50/kg
+
+    const { data, error } = await supabase.from("parcels").insert({
+      ...newParcel,
+      payment_amount: paymentAmount,
+    }).select().single();
 
     if (error) {
       toast({
@@ -96,12 +103,17 @@ const Admin = () => {
         description: error.message,
         variant: "destructive",
       });
-    } else {
+    } else if (data) {
       toast({
         title: "Parcel created",
-        description: "The parcel has been added successfully.",
+        description: "Now proceed to payment.",
       });
       setIsCreateOpen(false);
+      setPaymentParcel({
+        id: data.id,
+        trackingId: data.tracking_id,
+        amount: paymentAmount,
+      });
       fetchParcels();
     }
   };
@@ -321,20 +333,21 @@ const Admin = () => {
                   <TableHead>Receiver</TableHead>
                   <TableHead>Route</TableHead>
                   <TableHead>Operator</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                   <TableHead>Status</TableHead>
+                   <TableHead>Payment</TableHead>
+                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
+                    <TableCell colSpan={8} className="text-center py-8">
                       <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                     </TableCell>
                   </TableRow>
                 ) : filteredParcels.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                       No parcels found
                     </TableCell>
                   </TableRow>
@@ -362,8 +375,34 @@ const Admin = () => {
                         <Badge className={statusColors[parcel.status]} variant="outline">
                           {parcel.status.replace("_", " ")}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                       </TableCell>
+                       <TableCell>
+                         {(parcel as any).payment_status === "paid" ? (
+                           <Badge className="bg-green-100 text-green-800 border-green-200" variant="outline">
+                             Paid
+                           </Badge>
+                         ) : (parcel as any).payment_status === "pending" ? (
+                           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200" variant="outline">
+                             Pending
+                           </Badge>
+                         ) : (
+                           <Button
+                             size="sm"
+                             variant="outline"
+                             onClick={() =>
+                               setPaymentParcel({
+                                 id: parcel.id,
+                                 trackingId: parcel.tracking_id,
+                                 amount: (parcel as any).payment_amount || 200 + parcel.weight * 50,
+                               })
+                             }
+                           >
+                             <CreditCard className="w-3 h-3 mr-1" />
+                             Pay
+                           </Button>
+                         )}
+                       </TableCell>
+                       <TableCell>
                         <Select
                           value={parcel.status}
                           onValueChange={(value) => handleUpdateStatus(parcel.id, value as ParcelStatus)}
@@ -389,6 +428,17 @@ const Admin = () => {
           </CardContent>
         </Card>
       </main>
+
+      {paymentParcel && (
+        <MpesaPaymentDialog
+          open={!!paymentParcel}
+          onOpenChange={(open) => !open && setPaymentParcel(null)}
+          parcelId={paymentParcel.id}
+          trackingId={paymentParcel.trackingId}
+          amount={paymentParcel.amount}
+          onPaymentInitiated={fetchParcels}
+        />
+      )}
     </div>
   );
 };

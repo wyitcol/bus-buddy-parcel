@@ -20,8 +20,12 @@ export type Database = {
           created_at: string
           destination_city: string
           id: string
+          mpesa_phone: string | null
+          mpesa_receipt: string | null
           notes: string | null
           origin_city: string
+          payment_amount: number | null
+          payment_status: string
           receiver_address: string
           receiver_name: string
           receiver_phone: string
@@ -39,8 +43,12 @@ export type Database = {
           created_at?: string
           destination_city: string
           id?: string
+          mpesa_phone?: string | null
+          mpesa_receipt?: string | null
           notes?: string | null
           origin_city: string
+          payment_amount?: number | null
+          payment_status?: string
           receiver_address: string
           receiver_name: string
           receiver_phone: string
@@ -58,8 +66,12 @@ export type Database = {
           created_at?: string
           destination_city?: string
           id?: string
+          mpesa_phone?: string | null
+          mpesa_receipt?: string | null
           notes?: string | null
           origin_city?: string
+          payment_amount?: number | null
+          payment_status?: string
           receiver_address?: string
           receiver_name?: string
           receiver_phone?: string
