@@ -34,13 +34,17 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <Button variant="hero" size="xl">
-              Send a Parcel
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-            <Button variant="outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              Track Your Parcel
-            </Button>
+            <a href="/admin">
+              <Button variant="hero" size="xl">
+                Send a Parcel
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            </a>
+            <a href="#track">
+              <Button variant="outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+                Track Your Parcel
+              </Button>
+            </a>
           </div>
 
           {/* Stats */}

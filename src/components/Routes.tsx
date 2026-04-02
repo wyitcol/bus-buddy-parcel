@@ -141,18 +141,22 @@ const Routes = () => {
                 </div>
               </div>
 
-              <Button variant="outline" className="w-full">
-                Send via this Route
-              </Button>
+              <a href="/admin">
+                <Button variant="outline" className="w-full">
+                  Send via this Route
+                </Button>
+              </a>
             </div>
           ))}
         </div>
 
         <div className="text-center">
-          <Button variant="ghost" size="lg">
-            View All Routes
-            <ArrowRight className="w-4 h-4" />
-          </Button>
+          <a href="/admin">
+            <Button variant="ghost" size="lg">
+              View All Routes
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </a>
         </div>
       </div>
     </section>
