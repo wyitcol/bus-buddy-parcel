@@ -116,6 +116,7 @@ const Admin = () => {
       });
       fetchParcels();
     }
+  };
 
   const handleUpdateStatus = async (parcelId: string, newStatus: ParcelStatus) => {
     const { error } = await supabase
