@@ -375,8 +375,34 @@ const Admin = () => {
                         <Badge className={statusColors[parcel.status]} variant="outline">
                           {parcel.status.replace("_", " ")}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                       </TableCell>
+                       <TableCell>
+                         {(parcel as any).payment_status === "paid" ? (
+                           <Badge className="bg-green-100 text-green-800 border-green-200" variant="outline">
+                             Paid
+                           </Badge>
+                         ) : (parcel as any).payment_status === "pending" ? (
+                           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200" variant="outline">
+                             Pending
+                           </Badge>
+                         ) : (
+                           <Button
+                             size="sm"
+                             variant="outline"
+                             onClick={() =>
+                               setPaymentParcel({
+                                 id: parcel.id,
+                                 trackingId: parcel.tracking_id,
+                                 amount: (parcel as any).payment_amount || 200 + parcel.weight * 50,
+                               })
+                             }
+                           >
+                             <CreditCard className="w-3 h-3 mr-1" />
+                             Pay
+                           </Button>
+                         )}
+                       </TableCell>
+                       <TableCell>
                         <Select
                           value={parcel.status}
                           onValueChange={(value) => handleUpdateStatus(parcel.id, value as ParcelStatus)}
