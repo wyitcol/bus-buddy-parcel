@@ -9,11 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Bus, Package, LogOut, Plus, Search, RefreshCw, Edit } from "lucide-react";
+import { Bus, Package, LogOut, Plus, Search, RefreshCw, Edit, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from "@/integrations/supabase/types";
+import MpesaPaymentDialog from "@/components/MpesaPaymentDialog";
 
 type Parcel = Database["public"]["Tables"]["parcels"]["Row"];
 type ParcelStatus = Database["public"]["Enums"]["parcel_status"];
