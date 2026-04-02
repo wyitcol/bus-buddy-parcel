@@ -428,6 +428,17 @@ const Admin = () => {
           </CardContent>
         </Card>
       </main>
+
+      {paymentParcel && (
+        <MpesaPaymentDialog
+          open={!!paymentParcel}
+          onOpenChange={(open) => !open && setPaymentParcel(null)}
+          parcelId={paymentParcel.id}
+          trackingId={paymentParcel.trackingId}
+          amount={paymentParcel.amount}
+          onPaymentInitiated={fetchParcels}
+        />
+      )}
     </div>
   );
 };
