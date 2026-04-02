@@ -341,7 +341,7 @@ const Admin = () => {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
+                    <TableCell colSpan={8} className="text-center py-8">
                       <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                     </TableCell>
                   </TableRow>
