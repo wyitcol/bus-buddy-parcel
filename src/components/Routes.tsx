@@ -151,10 +151,12 @@ const Routes = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="ghost" size="lg">
-            View All Routes
-            <ArrowRight className="w-4 h-4" />
-          </Button>
+          <a href="/admin">
+            <Button variant="ghost" size="lg">
+              View All Routes
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </a>
         </div>
       </div>
     </section>
