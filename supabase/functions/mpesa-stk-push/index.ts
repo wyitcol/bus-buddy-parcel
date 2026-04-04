@@ -40,9 +40,11 @@ serve(async (req) => {
       { headers: { Authorization: `Basic ${auth}` } }
     );
     const tokenData = await tokenRes.json();
+    console.log("Token response status:", tokenRes.status);
+    console.log("Token response:", JSON.stringify(tokenData));
 
     if (!tokenData.access_token) {
-      throw new Error("Failed to get M-Pesa access token");
+      throw new Error("Failed to get M-Pesa access token: " + JSON.stringify(tokenData));
     }
 
     // Step 2: Initiate STK Push
