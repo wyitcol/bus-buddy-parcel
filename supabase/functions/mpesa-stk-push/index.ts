@@ -40,9 +40,11 @@ serve(async (req) => {
       { headers: { Authorization: `Basic ${auth}` } }
     );
     const tokenData = await tokenRes.json();
+    console.log("Token response status:", tokenRes.status);
+    console.log("Token response:", JSON.stringify(tokenData));
 
     if (!tokenData.access_token) {
-      throw new Error("Failed to get M-Pesa access token");
+      throw new Error("Failed to get M-Pesa access token: " + JSON.stringify(tokenData));
     }
 
     // Step 2: Initiate STK Push
@@ -90,6 +92,8 @@ serve(async (req) => {
     );
 
     const stkData = await stkRes.json();
+    console.log("STK Push response status:", stkRes.status);
+    console.log("STK Push response:", JSON.stringify(stkData));
 
     if (stkData.ResponseCode === "0") {
       // Update parcel with payment info
