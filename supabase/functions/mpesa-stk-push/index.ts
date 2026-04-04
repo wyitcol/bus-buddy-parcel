@@ -30,8 +30,8 @@ serve(async (req) => {
       throw new Error("M-Pesa credentials not configured");
     }
 
-    // Use sandbox URL for testing, production for live
-    const baseUrl = "https://sandbox.safaricom.co.ke";
+    // Use production URL (switch to sandbox.safaricom.co.ke for testing)
+    const baseUrl = "https://api.safaricom.co.ke";
 
     // Step 1: Get OAuth token
     const auth = btoa(`${consumerKey}:${consumerSecret}`);
