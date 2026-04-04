@@ -92,6 +92,8 @@ serve(async (req) => {
     );
 
     const stkData = await stkRes.json();
+    console.log("STK Push response status:", stkRes.status);
+    console.log("STK Push response:", JSON.stringify(stkData));
 
     if (stkData.ResponseCode === "0") {
       // Update parcel with payment info
