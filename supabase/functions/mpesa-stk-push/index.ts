@@ -38,16 +38,28 @@ serve(async (req) => {
     const shortcode = Deno.env.get("MPESA_SHORTCODE");
     const passkey = Deno.env.get("MPESA_PASSKEY");
 
+    // Allow switching between sandbox and production via env var
+    const mpesaEnv = (Deno.env.get("MPESA_ENV") || "sandbox").toLowerCase();
+    const baseUrl =
+      mpesaEnv === "production"
+        ? "https://api.safaricom.co.ke"
+        : "https://sandbox.safaricom.co.ke";
+
+    console.log(`M-Pesa env: ${mpesaEnv}, baseUrl: ${baseUrl}`);
+    console.log(
+      `Credentials present -> key:${!!consumerKey} secret:${!!consumerSecret} shortcode:${shortcode} passkey:${!!passkey}`
+    );
+
     // Try real M-Pesa if credentials are configured
     if (consumerKey && consumerSecret && shortcode && passkey && !simulate) {
       try {
-        const baseUrl = "https://sandbox.safaricom.co.ke";
         const auth = btoa(`${consumerKey}:${consumerSecret}`);
         const tokenRes = await fetch(
           `${baseUrl}/oauth/v1/generate?grant_type=client_credentials`,
           { headers: { Authorization: `Basic ${auth}` } }
         );
         const tokenData = await tokenRes.json();
+        console.log("OAuth token response:", JSON.stringify(tokenData));
 
         if (tokenData.access_token) {
           const timestamp = new Date()
