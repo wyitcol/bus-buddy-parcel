@@ -95,6 +95,7 @@ serve(async (req) => {
             }
           );
           const stkData = await stkRes.json();
+          console.log("STK push response:", JSON.stringify(stkData));
 
           if (stkData.ResponseCode === "0") {
             await supabase
@@ -115,12 +116,54 @@ serve(async (req) => {
               { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
           }
-          // If STK push failed, fall through to simulation
-          console.log("Real M-Pesa failed, falling back to simulation:", JSON.stringify(stkData));
+          // Real STK push failed — return the actual error so the user sees it
+          console.log("Real M-Pesa STK push failed:", JSON.stringify(stkData));
+          return new Response(
+            JSON.stringify({
+              success: false,
+              error:
+                stkData.errorMessage ||
+                stkData.ResponseDescription ||
+                "M-Pesa STK push failed",
+              details: stkData,
+            }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
         }
+        // No access token — surface the OAuth error
+        console.log("M-Pesa OAuth failed:", JSON.stringify(tokenData));
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error:
+              tokenData.errorMessage ||
+              "Failed to authenticate with M-Pesa. Check MPESA_CONSUMER_KEY / MPESA_CONSUMER_SECRET and MPESA_ENV (sandbox vs production).",
+            details: tokenData,
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       } catch (mpesaError) {
-        console.log("Real M-Pesa error, falling back to simulation:", mpesaError.message);
+        console.log("Real M-Pesa exception:", mpesaError.message);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: `M-Pesa request error: ${mpesaError.message}`,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
+    }
+
+    // Simulated payment flow (only when credentials missing OR simulate=true was explicitly passed)
+    if (!simulate) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error:
+            "M-Pesa credentials are not fully configured. Set MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, MPESA_SHORTCODE, MPESA_PASSKEY (and MPESA_ENV).",
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Simulated payment flow for demo/testing
