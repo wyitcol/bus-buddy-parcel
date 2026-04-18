@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, DollarSign, ArrowRight, Bus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const routes = [
   {
@@ -141,22 +142,22 @@ const Routes = () => {
                 </div>
               </div>
 
-              <a href="/admin">
-                <Button variant="outline" className="w-full">
+              <Button asChild variant="outline" className="w-full">
+                <Link to="/admin">
                   Send via this Route
-                </Button>
-              </a>
+                </Link>
+              </Button>
             </div>
           ))}
         </div>
 
         <div className="text-center">
-          <a href="/admin">
-            <Button variant="ghost" size="lg">
+          <Button asChild variant="ghost" size="lg">
+            <Link to="/admin">
               View All Routes
               <ArrowRight className="w-4 h-4" />
-            </Button>
-          </a>
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

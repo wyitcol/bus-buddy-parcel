@@ -1,4 +1,5 @@
 import { Bus, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -7,12 +8,12 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div>
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                 <Bus className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="font-display font-bold text-xl">BusParcel</span>
-            </a>
+            </Link>
             <p className="text-background/70 text-sm mb-6">
               Connecting communities through reliable parcel transportation via our nationwide bus network.
             </p>
