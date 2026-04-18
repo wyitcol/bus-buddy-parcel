@@ -143,11 +143,12 @@ serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       } catch (mpesaError) {
-        console.log("Real M-Pesa exception:", mpesaError.message);
+        const msg = mpesaError instanceof Error ? mpesaError.message : String(mpesaError);
+        console.log("Real M-Pesa exception:", msg);
         return new Response(
           JSON.stringify({
             success: false,
-            error: `M-Pesa request error: ${mpesaError.message}`,
+            error: `M-Pesa request error: ${msg}`,
           }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
@@ -189,9 +190,10 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
     console.error("M-Pesa STK Push error:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: msg }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

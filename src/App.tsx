@@ -12,6 +12,7 @@ import Chapter2 from "./pages/Chapter2";
 import Chapter3 from "./pages/Chapter3";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import SendParcel from "./pages/SendParcel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/chapter-3" element={<Chapter3 />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/send/:operator" element={<SendParcel />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
