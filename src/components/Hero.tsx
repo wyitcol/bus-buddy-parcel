@@ -4,6 +4,10 @@ import heroImage from "@/assets/hero-bus.jpg";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
+  const scrollToTrack = () => {
+    document.getElementById("track")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
       {/* Background Image with Overlay */}
@@ -41,11 +45,14 @@ const Hero = () => {
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
-            <a href="#track">
-              <Button variant="outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button
+              variant="outline"
+              size="xl"
+              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+              onClick={scrollToTrack}
+            >
                 Track Your Parcel
-              </Button>
-            </a>
+            </Button>
           </div>
 
           {/* Stats */}

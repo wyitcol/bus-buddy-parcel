@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    setIsOpen(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
@@ -19,18 +23,34 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              type="button"
+              onClick={() => scrollToSection("how-it-works")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               How it Works
-            </a>
-            <a href="#routes" className="text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("routes")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Routes
-            </a>
-            <a href="#track" className="text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("track")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Track Parcel
-            </a>
-            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("pricing")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Pricing
-            </a>
+            </button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
@@ -58,18 +78,34 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-4">
-              <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              <button
+                type="button"
+                onClick={() => scrollToSection("how-it-works")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 How it Works
-              </a>
-              <a href="#routes" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("routes")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 Routes
-              </a>
-              <a href="#track" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("track")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 Track Parcel
-              </a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("pricing")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 Pricing
-              </a>
+              </button>
               <div className="flex flex-col gap-2 pt-4">
                 <Button asChild variant="ghost" className="w-full">
                   <Link to="/auth">Sign In</Link>

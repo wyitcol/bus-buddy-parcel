@@ -2,6 +2,10 @@ import { Bus, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-r
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-foreground text-background py-16">
       <div className="container mx-auto px-4">
@@ -34,10 +38,26 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-3">
-              <li><a href="#how-it-works" className="text-background/70 hover:text-background transition-colors">How it Works</a></li>
-              <li><a href="#routes" className="text-background/70 hover:text-background transition-colors">Routes</a></li>
-              <li><a href="#track" className="text-background/70 hover:text-background transition-colors">Track Parcel</a></li>
-              <li><a href="#pricing" className="text-background/70 hover:text-background transition-colors">Pricing</a></li>
+              <li>
+                <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-background/70 hover:text-background transition-colors">
+                  How it Works
+                </button>
+              </li>
+              <li>
+                <button type="button" onClick={() => scrollToSection("routes")} className="text-background/70 hover:text-background transition-colors">
+                  Routes
+                </button>
+              </li>
+              <li>
+                <button type="button" onClick={() => scrollToSection("track")} className="text-background/70 hover:text-background transition-colors">
+                  Track Parcel
+                </button>
+              </li>
+              <li>
+                <button type="button" onClick={() => scrollToSection("pricing")} className="text-background/70 hover:text-background transition-colors">
+                  Pricing
+                </button>
+              </li>
               <li><a href="#" className="text-background/70 hover:text-background transition-colors">FAQs</a></li>
             </ul>
           </div>
