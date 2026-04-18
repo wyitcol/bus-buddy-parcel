@@ -155,7 +155,7 @@ const Routes = () => {
 
         <div className="text-center">
           <Button asChild variant="ghost" size="lg">
-            <Link to="/admin">
+            <Link to="/routes">
               View All Routes
               <ArrowRight className="w-4 h-4" />
             </Link>
