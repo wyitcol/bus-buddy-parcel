@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Package, MapPin, Clock } from "lucide-react";
 import heroImage from "@/assets/hero-bus.jpg";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
+  const scrollToTrack = () => {
+    document.getElementById("track")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
       {/* Background Image with Overlay */}
@@ -34,17 +39,20 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <a href="/admin">
-              <Button variant="hero" size="xl">
+            <Button asChild variant="hero" size="xl">
+              <Link to="/admin">
                 Send a Parcel
                 <ArrowRight className="w-5 h-5" />
-              </Button>
-            </a>
-            <a href="#track">
-              <Button variant="outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              size="xl"
+              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+              onClick={scrollToTrack}
+            >
                 Track Your Parcel
-              </Button>
-            </a>
+            </Button>
           </div>
 
           {/* Stats */}

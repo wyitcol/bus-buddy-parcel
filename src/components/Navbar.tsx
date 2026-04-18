@@ -1,47 +1,68 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Bus, Menu, X, Package } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    setIsOpen(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <Bus className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="font-display font-bold text-xl text-foreground">BusParcel</span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              type="button"
+              onClick={() => scrollToSection("how-it-works")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               How it Works
-            </a>
-            <a href="#routes" className="text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("routes")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Routes
-            </a>
-            <a href="#track" className="text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("track")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Track Parcel
-            </a>
-            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("pricing")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Pricing
-            </a>
+            </button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <a href="/auth">
-              <Button variant="ghost">Sign In</Button>
-            </a>
-            <a href="/admin">
-              <Button>
+            <Button asChild variant="ghost">
+              <Link to="/auth">Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/admin">
                 <Package className="w-4 h-4" />
                 Send Parcel
-              </Button>
-            </a>
+              </Link>
+            </Button>
           </div>
 
           {/* Mobile menu button */}
@@ -57,28 +78,44 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-4">
-              <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              <button
+                type="button"
+                onClick={() => scrollToSection("how-it-works")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 How it Works
-              </a>
-              <a href="#routes" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("routes")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 Routes
-              </a>
-              <a href="#track" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("track")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 Track Parcel
-              </a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors py-2">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("pricing")}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 text-left"
+              >
                 Pricing
-              </a>
+              </button>
               <div className="flex flex-col gap-2 pt-4">
-                <a href="/auth">
-                  <Button variant="ghost" className="w-full">Sign In</Button>
-                </a>
-                <a href="/admin">
-                  <Button className="w-full">
+                <Button asChild variant="ghost" className="w-full">
+                  <Link to="/auth">Sign In</Link>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link to="/admin">
                     <Package className="w-4 h-4" />
                     Send Parcel
-                  </Button>
-                </a>
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
