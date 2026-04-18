@@ -143,8 +143,10 @@ const Routes = () => {
               </div>
 
               <Button asChild variant="outline" className="w-full">
-                <Link to="/admin">
-                  Send via this Route
+                <Link
+                  to={`/send/${route.operator.toLowerCase()}?from=${encodeURIComponent(route.from)}&to=${encodeURIComponent(route.to)}`}
+                >
+                  Send via {route.operator}
                 </Link>
               </Button>
             </div>
