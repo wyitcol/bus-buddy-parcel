@@ -14,7 +14,8 @@ type StatusEmailPayload = {
   receiverName: string;
 };
 
-const toStatusLabel = (status: string) => status.replaceAll("_", " ").replace(/\b\w/g, (char) => char.toUpperCase());
+const formatStatusLabel = (status: string) =>
+  status.replaceAll("_", " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -62,7 +63,7 @@ serve(async (req) => {
       });
     }
 
-    const statusLabel = toStatusLabel(payload.status);
+    const statusLabel = formatStatusLabel(payload.status);
     const subject = `Parcel ${payload.trackingId} status: ${statusLabel}`;
     const text = [
       `Your parcel ${payload.trackingId} is now ${statusLabel}.`,

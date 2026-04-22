@@ -133,9 +133,18 @@ const Admin = () => {
         variant: "destructive",
       });
     } else {
+      if (!updatedParcel) {
+        toast({
+          title: "Status updated",
+          description: `Parcel status changed to ${newStatus}.`,
+        });
+        fetchParcels();
+        return;
+      }
+
       let emailFailed = false;
 
-      if (updatedParcel?.sender_user_id) {
+      if (updatedParcel.sender_user_id) {
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("email")
