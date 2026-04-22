@@ -119,6 +119,7 @@ const Admin = () => {
   };
 
   const handleUpdateStatus = async (parcelId: string, newStatus: ParcelStatus) => {
+    const parcel = parcels.find((item) => item.id === parcelId);
     const { error } = await supabase
       .from("parcels")
       .update({ status: newStatus })
@@ -131,9 +132,39 @@ const Admin = () => {
         variant: "destructive",
       });
     } else {
+      let emailNotificationFailed = false;
+
+      if (parcel?.sender_user_id) {
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("email")
+          .eq("user_id", parcel.sender_user_id)
+          .maybeSingle();
+
+        if (!profileError && profile?.email) {
+          const { error: emailError } = await supabase.functions.invoke("send-status-email", {
+            body: {
+              toEmail: profile.email,
+              trackingId: parcel.tracking_id,
+              status: newStatus,
+              originCity: parcel.origin_city,
+              destinationCity: parcel.destination_city,
+              receiverName: parcel.receiver_name,
+            },
+          });
+
+          if (emailError) {
+            console.error("Email notification error:", emailError);
+            emailNotificationFailed = true;
+          }
+        }
+      }
+
       toast({
         title: "Status updated",
-        description: `Parcel status changed to ${newStatus}.`,
+        description: emailNotificationFailed
+          ? `Parcel status changed to ${newStatus}, but email notification failed.`
+          : `Parcel status changed to ${newStatus}.`,
       });
       fetchParcels();
     }
