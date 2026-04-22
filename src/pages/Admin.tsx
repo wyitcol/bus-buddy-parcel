@@ -133,7 +133,7 @@ const Admin = () => {
         variant: "destructive",
       });
     } else {
-      let shouldShowEmailError = false;
+      let emailFailed = false;
 
       if (updatedParcel?.sender_user_id) {
         const { data: profile, error: profileError } = await supabase
@@ -156,14 +156,14 @@ const Admin = () => {
 
           if (emailError) {
             console.error("Email notification error:", emailError);
-            shouldShowEmailError = true;
+            emailFailed = true;
           }
         }
       }
 
       toast({
         title: "Status updated",
-        description: shouldShowEmailError
+        description: emailFailed
           ? `Parcel status changed to ${newStatus}, but email notification failed.`
           : `Parcel status changed to ${newStatus}.`,
       });

@@ -30,10 +30,17 @@ serve(async (req) => {
 
   try {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    const senderEmail = Deno.env.get("STATUS_EMAIL_FROM") || "BusParcel <notifications@example.com>";
+    const senderEmail = Deno.env.get("STATUS_EMAIL_FROM");
 
     if (!resendApiKey) {
       return new Response(JSON.stringify({ error: "Missing RESEND_API_KEY secret" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!senderEmail) {
+      return new Response(JSON.stringify({ error: "Missing STATUS_EMAIL_FROM secret" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
