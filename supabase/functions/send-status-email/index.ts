@@ -107,7 +107,7 @@ serve(async (req) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("send-status-email error:", message);
-    return new Response(JSON.stringify({ error: message }), {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

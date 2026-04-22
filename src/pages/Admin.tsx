@@ -119,11 +119,12 @@ const Admin = () => {
   };
 
   const handleUpdateStatus = async (parcelId: string, newStatus: ParcelStatus) => {
-    const parcel = parcels.find((item) => item.id === parcelId);
-    const { error } = await supabase
+    const { data: updatedParcel, error } = await supabase
       .from("parcels")
       .update({ status: newStatus })
-      .eq("id", parcelId);
+      .eq("id", parcelId)
+      .select("*")
+      .single();
 
     if (error) {
       toast({
@@ -132,37 +133,37 @@ const Admin = () => {
         variant: "destructive",
       });
     } else {
-      let emailNotificationFailed = false;
+      let shouldShowEmailError = false;
 
-      if (parcel?.sender_user_id) {
+      if (updatedParcel?.sender_user_id) {
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("email")
-          .eq("user_id", parcel.sender_user_id)
+          .eq("user_id", updatedParcel.sender_user_id)
           .maybeSingle();
 
         if (!profileError && profile?.email) {
           const { error: emailError } = await supabase.functions.invoke("send-status-email", {
             body: {
               toEmail: profile.email,
-              trackingId: parcel.tracking_id,
+              trackingId: updatedParcel.tracking_id,
               status: newStatus,
-              originCity: parcel.origin_city,
-              destinationCity: parcel.destination_city,
-              receiverName: parcel.receiver_name,
+              originCity: updatedParcel.origin_city,
+              destinationCity: updatedParcel.destination_city,
+              receiverName: updatedParcel.receiver_name,
             },
           });
 
           if (emailError) {
             console.error("Email notification error:", emailError);
-            emailNotificationFailed = true;
+            shouldShowEmailError = true;
           }
         }
       }
 
       toast({
         title: "Status updated",
-        description: emailNotificationFailed
+        description: shouldShowEmailError
           ? `Parcel status changed to ${newStatus}, but email notification failed.`
           : `Parcel status changed to ${newStatus}.`,
       });
