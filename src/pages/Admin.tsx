@@ -151,6 +151,11 @@ const Admin = () => {
           .eq("user_id", updatedParcel.sender_user_id)
           .maybeSingle();
 
+        if (profileError) {
+          console.error("Profile lookup error:", profileError);
+          emailFailed = true;
+        }
+
         if (!profileError && profile?.email) {
           const { error: emailError } = await supabase.functions.invoke("send-status-email", {
             body: {

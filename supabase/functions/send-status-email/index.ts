@@ -17,6 +17,14 @@ type StatusEmailPayload = {
 const formatStatusLabel = (status: string) =>
   status.replaceAll("_", " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -64,6 +72,11 @@ serve(async (req) => {
     }
 
     const statusLabel = formatStatusLabel(payload.status);
+    const safeTrackingId = escapeHtml(payload.trackingId);
+    const safeStatusLabel = escapeHtml(statusLabel);
+    const safeOriginCity = escapeHtml(payload.originCity);
+    const safeDestinationCity = escapeHtml(payload.destinationCity);
+    const safeReceiverName = escapeHtml(payload.receiverName);
     const subject = `Parcel ${payload.trackingId} status: ${statusLabel}`;
     const text = [
       `Your parcel ${payload.trackingId} is now ${statusLabel}.`,
@@ -76,9 +89,9 @@ serve(async (req) => {
     const html = `
       <div style="font-family: Arial, sans-serif; line-height:1.5; color:#111827;">
         <h2 style="margin:0 0 12px;">Parcel Status Update</h2>
-        <p style="margin:0 0 8px;">Your parcel <strong>${payload.trackingId}</strong> is now <strong>${statusLabel}</strong>.</p>
-        <p style="margin:0 0 8px;"><strong>Route:</strong> ${payload.originCity} → ${payload.destinationCity}</p>
-        <p style="margin:0 0 16px;"><strong>Receiver:</strong> ${payload.receiverName}</p>
+        <p style="margin:0 0 8px;">Your parcel <strong>${safeTrackingId}</strong> is now <strong>${safeStatusLabel}</strong>.</p>
+        <p style="margin:0 0 8px;"><strong>Route:</strong> ${safeOriginCity} → ${safeDestinationCity}</p>
+        <p style="margin:0 0 16px;"><strong>Receiver:</strong> ${safeReceiverName}</p>
         <p style="margin:0;">Thank you for using BusParcel.</p>
       </div>
     `;
