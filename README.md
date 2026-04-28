@@ -64,10 +64,48 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Google OAuth Setup
 
-Yes, you can!
+BusParcel supports Google sign-in via Supabase Auth. Follow these steps to enable it.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### 1. Create a Google OAuth Client
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → **APIs & Services** → **Credentials**.
+2. Click **Create Credentials** → **OAuth 2.0 Client ID** → **Web application**.
+3. Set the following:
+   - **Authorized JavaScript origins**:
+     - `http://localhost:3000` (local dev)
+     - Your production URL (e.g. `https://your-app.com`)
+   - **Authorized redirect URIs**:
+     - `https://<your-supabase-project-ref>.supabase.co/auth/v1/callback`
+4. Copy the **Client ID** and **Client Secret**.
+
+### 2. Enable Google provider in Supabase
+
+1. Open your [Supabase Dashboard](https://supabase.com/dashboard).
+2. Navigate to **Authentication** → **Providers** → **Google**.
+3. Toggle **Enable** and paste your Google **Client ID** and **Client Secret**.
+4. Save.
+
+### 3. Configure redirect URLs in Supabase
+
+1. In your Supabase Dashboard go to **Authentication** → **URL Configuration**.
+2. Set **Site URL** to:
+   - `http://localhost:3000` for local dev
+   - Your production URL for production
+3. Under **Redirect URLs**, add:
+   - `http://localhost:3000`
+   - Your production URL
+
+### 4. Local environment variables
+
+Ensure your `.env` (or `.env.local`) contains:
+
+```env
+VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<your-anon-key>
+```
+
+After these steps, clicking **Continue with Google** on the login page will redirect users through Google's consent screen, then back to the app with a valid Supabase session.
+
+
