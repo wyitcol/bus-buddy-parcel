@@ -14,6 +14,7 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import SendParcel from "./pages/SendParcel";
 import AllRoutes from "./pages/AllRoutes";
+import BookingForm from "./pages/BookingForm";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/send/:operator" element={<SendParcel />} />
             <Route path="/routes" element={<AllRoutes />} />
+            <Route path="/book" element={<BookingForm />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

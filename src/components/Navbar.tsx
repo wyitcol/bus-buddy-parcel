@@ -51,6 +51,9 @@ const Navbar = () => {
             >
               Pricing
             </button>
+            <Link to="/book" className="text-muted-foreground hover:text-foreground transition-colors">
+              Book a Parcel
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
@@ -106,6 +109,13 @@ const Navbar = () => {
               >
                 Pricing
               </button>
+              <Link
+                to="/book"
+                className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={() => setIsOpen(false)}
+              >
+                Book a Parcel
+              </Link>
               <div className="flex flex-col gap-2 pt-4">
                 <Button asChild variant="ghost" className="w-full">
                   <Link to="/auth">Sign In</Link>
