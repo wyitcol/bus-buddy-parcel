@@ -1,200 +1,172 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Bus, CheckCircle2, Loader2, Package } from "lucide-react";
+import { Bus, CheckCircle2, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import type { Database } from "@/integrations/supabase/types";
 
-type BusOperator = Database["public"]["Enums"]["bus_operator"];
+/* ── Static option lists ── */
 
-const parcelTypes = [
-  "Documents",
-  "Electronics",
-  "Clothing & Textiles",
-  "Food & Perishables",
-  "Hardware & Tools",
-  "Other",
+const ageGroups = ["Under 18", "18–24", "25–34", "35–44", "45–54", "55 and above"];
+const genders = ["Male", "Female", "Prefer not to say"];
+const occupations = ["Student", "Employed (private sector)", "Employed (public sector)", "Self-employed / Business owner", "Unemployed", "Other"];
+const counties = ["Nairobi", "Mombasa", "Kisumu", "Nakuru", "Eldoret / Uasin Gishu", "Kilifi", "Kwale", "Taita-Taveta", "Other"];
+
+const sendFrequencies = [
+  "Never",
+  "Once a year or less",
+  "A few times a year",
+  "Once a month",
+  "Several times a month",
+  "Weekly or more",
+];
+const parcelTypes = ["Documents / letters", "Electronics / gadgets", "Clothing & textiles", "Food & perishables", "Hardware & tools", "Agricultural produce", "Other"];
+const commonRoutes = ["Nairobi – Mombasa", "Nairobi – Kisumu", "Nairobi – Eldoret", "Mombasa – Malindi", "Mombasa – Kilifi", "Other"];
+
+const busOperators = ["Tahmeed", "Buscar", "Mashpoa", "Other", "I have not used bus parcel services"];
+const problemsExperienced = [
+  "Lost parcel",
+  "Damaged parcel",
+  "Late delivery",
+  "No tracking / status updates",
+  "Dishonest conductor / driver",
+  "Difficulty locating the parcel on arrival",
+  "No formal receipt or documentation",
+  "I have not experienced any problems",
 ];
 
-const referralSources = [
-  "Social Media (Facebook / Instagram / Twitter)",
-  "Friend or Family",
-  "Google Search",
-  "Bus Terminal Advertisement",
-  "Other",
+const satisfactionLevels = ["Very satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very dissatisfied", "N/A – I have not used bus parcel services"];
+const likelihoodOptions = ["Very likely", "Likely", "Neutral", "Unlikely", "Very unlikely"];
+const importanceOptions = ["Very important", "Important", "Neutral", "Not important", "Not important at all"];
+const paymentMethods = ["M-Pesa (before sending)", "M-Pesa (on delivery)", "Cash at the bus terminal", "Bank transfer", "Other"];
+const pricingWillingness = ["KES 50–100 extra", "KES 101–200 extra", "KES 201–300 extra", "More than KES 300 extra", "I would not pay extra"];
+
+const desiredFeatures = [
+  "Real-time parcel tracking",
+  "SMS / email notifications",
+  "Online booking & receipt",
+  "M-Pesa payment integration",
+  "Parcel status history",
+  "Multiple bus operator options",
+  "Door-to-door delivery option",
+  "Insurance / compensation for lost parcels",
+  "Mobile-friendly website",
 ];
 
-const operatorOptions: { value: BusOperator; label: string }[] = [
-  { value: "tahmeed", label: "Tahmeed Bus" },
-  { value: "buscar", label: "Buscar" },
-  { value: "mashpoa", label: "Mashpoa" },
-];
+/* ── Form state ── */
+
+type FormState = {
+  // A: Background
+  ageGroup: string;
+  gender: string;
+  occupation: string;
+  county: string;
+  // B: Parcel habits
+  sendFrequency: string;
+  receiveFrequency: string;
+  parcelType: string;
+  commonRoute: string;
+  // C: Bus parcel experience
+  usedBusParcel: string;
+  busOperator: string;
+  problemsExperienced: string[];
+  satisfaction: string;
+  // D: Digital system preferences
+  likeliness: string;
+  importanceTracking: string;
+  importancePayment: string;
+  preferredPayment: string;
+  pricingWillingness: string;
+  desiredFeatures: string[];
+  // E: Open feedback
+  currentChallenges: string;
+  suggestions: string;
+  consent: boolean;
+};
+
+const initial: FormState = {
+  ageGroup: "",
+  gender: "",
+  occupation: "",
+  county: "",
+  sendFrequency: "",
+  receiveFrequency: "",
+  parcelType: "",
+  commonRoute: "",
+  usedBusParcel: "",
+  busOperator: "",
+  problemsExperienced: [],
+  satisfaction: "",
+  likeliness: "",
+  importanceTracking: "",
+  importancePayment: "",
+  preferredPayment: "",
+  pricingWillingness: "",
+  desiredFeatures: [],
+  currentChallenges: "",
+  suggestions: "",
+  consent: false,
+};
 
 const REQUIRED = <span className="text-red-500 ml-0.5">*</span>;
 
-type FormState = {
-  senderName: string;
-  senderPhone: string;
-  senderEmail: string;
-  parcelType: string;
-  weight: string;
-  itemCount: string;
-  parcelDescription: string;
-  busOperator: BusOperator | "";
-  originCity: string;
-  destinationCity: string;
-  preferredDate: string;
-  receiverName: string;
-  receiverPhone: string;
-  receiverAddress: string;
-  specialInstructions: string;
-  referralSource: string;
-  agreeToTerms: boolean;
-};
-
-const initialForm: FormState = {
-  senderName: "",
-  senderPhone: "",
-  senderEmail: "",
-  parcelType: "",
-  weight: "",
-  itemCount: "",
-  parcelDescription: "",
-  busOperator: "",
-  originCity: "",
-  destinationCity: "",
-  preferredDate: "",
-  receiverName: "",
-  receiverPhone: "",
-  receiverAddress: "",
-  specialInstructions: "",
-  referralSource: "",
-  agreeToTerms: false,
-};
-
-const calculatePrice = (weight: number) => 200 + weight * 50;
+/* ── Component ── */
 
 const BookingForm = () => {
-  const { toast } = useToast();
-  const [form, setForm] = useState<FormState>(initialForm);
+  const [form, setForm] = useState<FormState>(initial);
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [trackingId, setTrackingId] = useState("");
 
-  const update = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+  const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const weightNum = parseFloat(form.weight) || 0;
-  const price = weightNum > 0 ? calculatePrice(weightNum) : 0;
-
-  const isValid =
-    form.senderName.trim() &&
-    form.senderPhone.trim() &&
-    form.parcelType &&
-    weightNum > 0 &&
-    form.itemCount.trim() &&
-    form.parcelDescription.trim() &&
-    form.busOperator &&
-    form.originCity.trim() &&
-    form.destinationCity.trim() &&
-    form.receiverName.trim() &&
-    form.receiverPhone.trim() &&
-    form.receiverAddress.trim() &&
-    form.agreeToTerms;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isValid) return;
-
-    setIsSubmitting(true);
-    const paymentAmount = calculatePrice(weightNum);
-
-    const { data, error } = await supabase
-      .from("parcels")
-      .insert({
-        tracking_id: "",
-        sender_name: form.senderName,
-        sender_phone: form.senderPhone,
-        sender_address: form.originCity,
-        receiver_name: form.receiverName,
-        receiver_phone: form.receiverPhone,
-        receiver_address: form.receiverAddress,
-        origin_city: form.originCity,
-        destination_city: form.destinationCity,
-        weight: weightNum,
-        bus_operator: form.busOperator as BusOperator,
-        notes: [
-          form.parcelType && `Type: ${form.parcelType}`,
-          form.itemCount && `Items: ${form.itemCount}`,
-          form.parcelDescription && `Description: ${form.parcelDescription}`,
-          form.preferredDate && `Preferred date: ${form.preferredDate}`,
-          form.senderEmail && `Sender email: ${form.senderEmail}`,
-          form.specialInstructions && `Instructions: ${form.specialInstructions}`,
-        ]
-          .filter(Boolean)
-          .join(" | ") || null,
-        payment_amount: paymentAmount,
-      })
-      .select()
-      .single();
-
-    setIsSubmitting(false);
-
-    if (error || !data) {
-      toast({
-        title: "Submission failed",
-        description: error?.message || "Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setTrackingId(data.tracking_id);
-    setSubmitted(true);
+  const toggleMulti = (key: "problemsExperienced" | "desiredFeatures", value: string) => {
+    setForm((prev) => {
+      const arr = prev[key] as string[];
+      return {
+        ...prev,
+        [key]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value],
+      };
+    });
   };
 
+  const isValid =
+    form.ageGroup &&
+    form.gender &&
+    form.occupation &&
+    form.county &&
+    form.sendFrequency &&
+    form.receiveFrequency &&
+    form.usedBusParcel &&
+    form.likeliness &&
+    form.consent;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValid) return;
+    setSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  /* ── Thank-you screen ── */
   if (submitted) {
     return (
       <div className="min-h-screen bg-[#f0ebf8] flex flex-col items-center py-12 px-4">
-        {/* Form header accent */}
-        <div className="w-full max-w-2xl rounded-t-2xl overflow-hidden">
-          <div className="bg-primary h-3 rounded-t-2xl" />
-          <div className="bg-white px-8 py-6 border-b-4 border-primary/20 rounded-b-none shadow-sm">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <Bus className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="font-display font-bold text-xl text-foreground">Bus Buddy Parcel</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full max-w-2xl bg-white rounded-none rounded-b-2xl shadow-sm px-8 py-10 flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+        <FormHeader />
+        <div className="w-full max-w-2xl bg-white rounded-b-2xl shadow-sm border border-t-0 border-border px-8 py-12 flex flex-col items-center text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-5">
             <CheckCircle2 className="w-9 h-9 text-primary" />
           </div>
           <h2 className="font-display font-bold text-2xl text-foreground mb-3">
-            Your booking request has been received!
+            Thank you for your response!
           </h2>
-          <p className="text-muted-foreground mb-2">
-            Thank you for choosing Bus Buddy Parcel. Our team will confirm your booking shortly via SMS or phone call.
-          </p>
-          {trackingId && (
-            <p className="text-sm font-medium text-foreground bg-muted rounded-lg px-4 py-2 mt-2">
-              Tracking ID: <span className="font-mono text-primary">{trackingId}</span>
-            </p>
-          )}
-          <p className="text-xs text-muted-foreground mt-4">
-            You will receive an M-Pesa payment prompt once your booking is confirmed.
+          <p className="text-muted-foreground text-sm max-w-md leading-relaxed">
+            Your input is greatly appreciated and will contribute to the research on improving bus-based
+            parcel services in Kenya. Results will be used solely for academic purposes.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mt-8">
-            <Button variant="outline" onClick={() => { setForm(initialForm); setSubmitted(false); }}>
+            <Button variant="outline" onClick={() => { setForm(initial); setSubmitted(false); }}>
               Submit another response
             </Button>
             <Button asChild>
@@ -206,230 +178,199 @@ const BookingForm = () => {
     );
   }
 
+  /* ── Form ── */
   return (
     <div className="min-h-screen bg-[#f0ebf8] flex flex-col items-center py-12 px-4">
-      {/* ── Header card ── */}
-      <div className="w-full max-w-2xl rounded-t-2xl overflow-hidden shadow-sm">
-        <div className="bg-primary h-3" />
-        <div className="bg-white px-8 py-6 border-b border-border">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Bus className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">Bus Buddy Parcel</span>
-          </div>
-          <h1 className="font-display font-bold text-2xl text-foreground mb-2">
-            Parcel Booking Request
-          </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Fill in the details below to book a parcel delivery with Bus Buddy Parcel. We partner with
-            Tahmeed, Buscar, and Mashpoa bus services to deliver your packages across Kenya safely and
-            affordably.
-          </p>
-          <p className="text-xs text-muted-foreground mt-3">
-            Fields marked with {REQUIRED} are required.
-          </p>
-        </div>
-      </div>
+      <FormHeader />
 
       <form onSubmit={handleSubmit} className="w-full max-w-2xl flex flex-col gap-4">
-        {/* ── Section 1: Sender details ── */}
-        <Section title="Your Details (Sender)">
-          <Field label="Full name" required>
-            <Input
-              placeholder="e.g. John Kamau"
-              value={form.senderName}
-              onChange={(e) => update("senderName", e.target.value)}
-            />
-          </Field>
-          <Field label="Phone number" required hint="Include country code, e.g. +254712345678">
-            <Input
-              type="tel"
-              placeholder="+254 7XX XXX XXX"
-              value={form.senderPhone}
-              onChange={(e) => update("senderPhone", e.target.value)}
-            />
-          </Field>
-          <Field label="Email address (optional)">
-            <Input
-              type="email"
-              placeholder="you@example.com"
-              value={form.senderEmail}
-              onChange={(e) => update("senderEmail", e.target.value)}
-            />
-          </Field>
-        </Section>
 
-        {/* ── Section 2: Parcel information ── */}
-        <Section title="Parcel Information">
-          <Field label="Type of parcel" required>
-            <RadioGroup
-              value={form.parcelType}
-              onValueChange={(v) => update("parcelType", v)}
-              className="flex flex-col gap-2 mt-1"
-            >
-              {parcelTypes.map((type) => (
-                <label
-                  key={type}
-                  className="flex items-center gap-3 cursor-pointer rounded-lg border border-transparent hover:border-border hover:bg-muted/40 px-3 py-2 transition-colors"
-                >
-                  <RadioGroupItem value={type} id={`type-${type}`} />
-                  <span className="text-sm text-foreground">{type}</span>
-                </label>
-              ))}
+        {/* ── Section A: Respondent Background ── */}
+        <Section letter="A" title="Respondent Background">
+          <p className="text-xs text-muted-foreground -mt-2 mb-2">
+            This section collects general demographic information for research classification purposes.
+          </p>
+
+          <Field label="1. Age group" required>
+            <RadioGroup value={form.ageGroup} onValueChange={(v) => set("ageGroup", v)} className="flex flex-col gap-1 mt-1">
+              {ageGroups.map((o) => <RadioOption key={o} value={o} />)}
             </RadioGroup>
           </Field>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Weight (kg)" required>
-              <Input
-                type="number"
-                step="0.1"
-                min="0.1"
-                placeholder="e.g. 3.5"
-                value={form.weight}
-                onChange={(e) => update("weight", e.target.value)}
-              />
-              {weightNum > 0 && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Estimated cost: <span className="font-semibold text-foreground">KES {price.toLocaleString()}</span>
-                </p>
-              )}
-            </Field>
-            <Field label="Number of items" required>
-              <Input
-                type="number"
-                min="1"
-                step="1"
-                placeholder="e.g. 2"
-                value={form.itemCount}
-                onChange={(e) => update("itemCount", e.target.value)}
-              />
-            </Field>
-          </div>
-          <Field label="Brief description of contents" required hint="Help our staff handle your parcel correctly.">
-            <Textarea
-              placeholder="e.g. Three pairs of shoes in a cardboard box"
-              value={form.parcelDescription}
-              onChange={(e) => update("parcelDescription", e.target.value)}
-            />
-          </Field>
-        </Section>
 
-        {/* ── Section 3: Route details ── */}
-        <Section title="Route & Bus Operator">
-          <Field label="Preferred bus operator" required>
-            <RadioGroup
-              value={form.busOperator}
-              onValueChange={(v) => update("busOperator", v as BusOperator)}
-              className="flex flex-col gap-2 mt-1"
-            >
-              {operatorOptions.map((op) => (
-                <label
-                  key={op.value}
-                  className="flex items-center gap-3 cursor-pointer rounded-lg border border-transparent hover:border-border hover:bg-muted/40 px-3 py-2 transition-colors"
-                >
-                  <RadioGroupItem value={op.value} id={`op-${op.value}`} />
-                  <span className="text-sm text-foreground">{op.label}</span>
-                </label>
-              ))}
+          <Field label="2. Gender" required>
+            <RadioGroup value={form.gender} onValueChange={(v) => set("gender", v)} className="flex flex-col gap-1 mt-1">
+              {genders.map((o) => <RadioOption key={o} value={o} />)}
             </RadioGroup>
           </Field>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Origin city" required>
-              <Input
-                placeholder="e.g. Nairobi"
-                value={form.originCity}
-                onChange={(e) => update("originCity", e.target.value)}
-              />
-            </Field>
-            <Field label="Destination city" required>
-              <Input
-                placeholder="e.g. Mombasa"
-                value={form.destinationCity}
-                onChange={(e) => update("destinationCity", e.target.value)}
-              />
-            </Field>
-          </div>
-          <Field label="Preferred pickup date (optional)">
-            <Input
-              type="date"
-              value={form.preferredDate}
-              min={new Date().toISOString().split("T")[0]}
-              onFocus={(e) => { e.target.min = new Date().toISOString().split("T")[0]; }}
-              onChange={(e) => update("preferredDate", e.target.value)}
-            />
-          </Field>
-        </Section>
 
-        {/* ── Section 4: Receiver details ── */}
-        <Section title="Receiver Details">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Receiver's full name" required>
-              <Input
-                placeholder="e.g. Jane Wanjiru"
-                value={form.receiverName}
-                onChange={(e) => update("receiverName", e.target.value)}
-              />
-            </Field>
-            <Field label="Receiver's phone number" required>
-              <Input
-                type="tel"
-                placeholder="+254 7XX XXX XXX"
-                value={form.receiverPhone}
-                onChange={(e) => update("receiverPhone", e.target.value)}
-              />
-            </Field>
-          </div>
-          <Field label="Receiver's address / pickup location" required hint="Bus terminal, stage, or home address.">
-            <Textarea
-              placeholder="e.g. Mombasa Bus Terminus, near Coast Bus Stand"
-              value={form.receiverAddress}
-              onChange={(e) => update("receiverAddress", e.target.value)}
-            />
+          <Field label="3. Occupation" required>
+            <RadioGroup value={form.occupation} onValueChange={(v) => set("occupation", v)} className="flex flex-col gap-1 mt-1">
+              {occupations.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
           </Field>
-        </Section>
 
-        {/* ── Section 5: Additional info ── */}
-        <Section title="Additional Information">
-          <Field label="Special handling instructions (optional)">
-            <Textarea
-              placeholder="e.g. Fragile – handle with care. Do not stack heavy items on top."
-              value={form.specialInstructions}
-              onChange={(e) => update("specialInstructions", e.target.value)}
-            />
-          </Field>
-          <Field label="How did you hear about us?">
-            <RadioGroup
-              value={form.referralSource}
-              onValueChange={(v) => update("referralSource", v)}
-              className="flex flex-col gap-2 mt-1"
-            >
-              {referralSources.map((src) => (
-                <label
-                  key={src}
-                  className="flex items-center gap-3 cursor-pointer rounded-lg border border-transparent hover:border-border hover:bg-muted/40 px-3 py-2 transition-colors"
-                >
-                  <RadioGroupItem value={src} id={`ref-${src}`} />
-                  <span className="text-sm text-foreground">{src}</span>
-                </label>
-              ))}
+          <Field label="4. County / region you are based in" required>
+            <RadioGroup value={form.county} onValueChange={(v) => set("county", v)} className="flex flex-col gap-1 mt-1">
+              {counties.map((o) => <RadioOption key={o} value={o} />)}
             </RadioGroup>
           </Field>
         </Section>
 
-        {/* ── Terms + Submit ── */}
+        {/* ── Section B: Parcel Habits ── */}
+        <Section letter="B" title="Parcel Sending & Receiving Habits">
+          <p className="text-xs text-muted-foreground -mt-2 mb-2">
+            This section explores how often you send or receive parcels across Kenya.
+          </p>
+
+          <Field label="5. How often do you send parcels across Kenya?" required>
+            <RadioGroup value={form.sendFrequency} onValueChange={(v) => set("sendFrequency", v)} className="flex flex-col gap-1 mt-1">
+              {sendFrequencies.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="6. How often do you receive parcels from other towns/cities?" required>
+            <RadioGroup value={form.receiveFrequency} onValueChange={(v) => set("receiveFrequency", v)} className="flex flex-col gap-1 mt-1">
+              {sendFrequencies.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="7. What type of goods do you most commonly send or receive?">
+            <RadioGroup value={form.parcelType} onValueChange={(v) => set("parcelType", v)} className="flex flex-col gap-1 mt-1">
+              {parcelTypes.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="8. What is your most common route for sending or receiving parcels?">
+            <RadioGroup value={form.commonRoute} onValueChange={(v) => set("commonRoute", v)} className="flex flex-col gap-1 mt-1">
+              {commonRoutes.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+        </Section>
+
+        {/* ── Section C: Current Bus Parcel Experience ── */}
+        <Section letter="C" title="Experience with Bus-Based Parcel Services">
+          <p className="text-xs text-muted-foreground -mt-2 mb-2">
+            This section focuses on your experience using intercity buses (such as Tahmeed, Buscar, or Mashpoa) to send or receive parcels.
+          </p>
+
+          <Field label="9. Have you ever sent or received a parcel using an intercity bus service?" required>
+            <RadioGroup value={form.usedBusParcel} onValueChange={(v) => set("usedBusParcel", v)} className="flex flex-col gap-1 mt-1">
+              {["Yes", "No", "I have heard of it but never tried"].map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="10. Which bus operator did you use most recently for parcel delivery?">
+            <RadioGroup value={form.busOperator} onValueChange={(v) => set("busOperator", v)} className="flex flex-col gap-1 mt-1">
+              {busOperators.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="11. What problems have you experienced with bus-based parcel delivery? (Select all that apply)">
+            <div className="flex flex-col gap-1 mt-1">
+              {problemsExperienced.map((o) => (
+                <label key={o} className="flex items-center gap-3 cursor-pointer rounded-lg border border-transparent hover:border-border hover:bg-muted/40 px-3 py-2 transition-colors">
+                  <Checkbox
+                    checked={form.problemsExperienced.includes(o)}
+                    onCheckedChange={() => toggleMulti("problemsExperienced", o)}
+                  />
+                  <span className="text-sm text-foreground">{o}</span>
+                </label>
+              ))}
+            </div>
+          </Field>
+
+          <Field label="12. Overall, how satisfied are you with the current bus parcel service experience?">
+            <RadioGroup value={form.satisfaction} onValueChange={(v) => set("satisfaction", v)} className="flex flex-col gap-1 mt-1">
+              {satisfactionLevels.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+        </Section>
+
+        {/* ── Section D: Digital System Preferences ── */}
+        <Section letter="D" title="Digital System Preferences">
+          <p className="text-xs text-muted-foreground -mt-2 mb-2">
+            This section gauges your interest in a web-based platform (BusParcel) that digitalises the process of booking, paying for, and tracking parcels via bus.
+          </p>
+
+          <Field label="13. How likely would you be to use a web-based platform to book and track bus parcel deliveries?" required>
+            <RadioGroup value={form.likeliness} onValueChange={(v) => set("likeliness", v)} className="flex flex-col gap-1 mt-1">
+              {likelihoodOptions.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="14. How important is real-time tracking (knowing exactly where your parcel is) to you?">
+            <RadioGroup value={form.importanceTracking} onValueChange={(v) => set("importanceTracking", v)} className="flex flex-col gap-1 mt-1">
+              {importanceOptions.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="15. How important is it to be able to pay for parcel delivery online / via M-Pesa?">
+            <RadioGroup value={form.importancePayment} onValueChange={(v) => set("importancePayment", v)} className="flex flex-col gap-1 mt-1">
+              {importanceOptions.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="16. Which payment method would you prefer on a digital parcel platform?">
+            <RadioGroup value={form.preferredPayment} onValueChange={(v) => set("preferredPayment", v)} className="flex flex-col gap-1 mt-1">
+              {paymentMethods.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="17. How much extra would you be willing to pay for a formal, trackable, and insured bus parcel service compared to the current informal system?">
+            <RadioGroup value={form.pricingWillingness} onValueChange={(v) => set("pricingWillingness", v)} className="flex flex-col gap-1 mt-1">
+              {pricingWillingness.map((o) => <RadioOption key={o} value={o} />)}
+            </RadioGroup>
+          </Field>
+
+          <Field label="18. Which features would you most like to see in a bus parcel management system? (Select all that apply)">
+            <div className="flex flex-col gap-1 mt-1">
+              {desiredFeatures.map((o) => (
+                <label key={o} className="flex items-center gap-3 cursor-pointer rounded-lg border border-transparent hover:border-border hover:bg-muted/40 px-3 py-2 transition-colors">
+                  <Checkbox
+                    checked={form.desiredFeatures.includes(o)}
+                    onCheckedChange={() => toggleMulti("desiredFeatures", o)}
+                  />
+                  <span className="text-sm text-foreground">{o}</span>
+                </label>
+              ))}
+            </div>
+          </Field>
+        </Section>
+
+        {/* ── Section E: Open Feedback ── */}
+        <Section letter="E" title="General Feedback">
+          <Field label="19. In your opinion, what is the biggest challenge with the current (informal) bus parcel system in Kenya?">
+            <Textarea
+              placeholder="Share your thoughts here…"
+              rows={3}
+              value={form.currentChallenges}
+              onChange={(e) => set("currentChallenges", e.target.value)}
+            />
+          </Field>
+
+          <Field label="20. What suggestions do you have for improving parcel services using intercity buses?">
+            <Textarea
+              placeholder="Your suggestions…"
+              rows={3}
+              value={form.suggestions}
+              onChange={(e) => set("suggestions", e.target.value)}
+            />
+          </Field>
+        </Section>
+
+        {/* ── Consent + Submit ── */}
         <div className="bg-white rounded-2xl shadow-sm border border-border px-8 py-6 flex flex-col gap-4">
           <label className="flex items-start gap-3 cursor-pointer">
             <Checkbox
-              id="terms"
-              checked={form.agreeToTerms}
-              onCheckedChange={(checked) => update("agreeToTerms", !!checked)}
+              id="consent"
+              checked={form.consent}
+              onCheckedChange={(checked) => set("consent", !!checked)}
               className="mt-0.5"
             />
             <span className="text-sm text-muted-foreground leading-relaxed">
-              I confirm that the information provided is accurate and I agree to Bus Buddy Parcel's{" "}
-              Terms of Service and Privacy Policy. I understand
-              that payment will be collected via M-Pesa upon booking confirmation. {REQUIRED}
+              I confirm that I am participating in this research voluntarily. My responses will be used
+              solely for academic research purposes as part of a final-year Computer Science project at
+              Pwani University and will be treated confidentially. {REQUIRED}
             </span>
           </label>
 
@@ -437,37 +378,55 @@ const BookingForm = () => {
             type="submit"
             className="w-full sm:w-auto sm:self-end"
             size="lg"
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid}
           >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              <>
-                <Package className="w-4 h-4" />
-                Submit booking request
-              </>
-            )}
+            <ClipboardList className="w-4 h-4" />
+            Submit response
           </Button>
         </div>
       </form>
 
       <p className="text-xs text-muted-foreground mt-8 text-center max-w-md">
-        This form is powered by Bus Buddy Parcel. For enquiries call{" "}
-        <a href="tel:+254700000000" className="text-primary underline">+254 700 000 000</a>.
+        BusParcel Research Survey — Pwani University, Fourth Year CS Project (2026).
+        Responses are anonymous and used for academic purposes only.
       </p>
     </div>
   );
 };
 
-/* ── Helpers ── */
+/* ── Shared helpers ── */
 
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const FormHeader = () => (
+  <div className="w-full max-w-2xl rounded-t-2xl overflow-hidden shadow-sm">
+    <div className="bg-primary h-3" />
+    <div className="bg-white px-8 py-6 border border-t-0 border-border">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+          <Bus className="w-5 h-5 text-primary-foreground" />
+        </div>
+        <span className="font-display font-bold text-xl text-foreground">Bus Buddy Parcel</span>
+      </div>
+      <h1 className="font-display font-bold text-2xl text-foreground mb-2">
+        Research Data Collection Survey
+      </h1>
+      <p className="text-muted-foreground text-sm leading-relaxed">
+        This survey is part of a final-year Computer Science research project at <strong>Pwani University</strong> titled{" "}
+        <em>"BusParcel: A Smart Web-Based Parcel Transportation System Using Intercity Bus Services in Kenya"</em>.
+        Your responses will help us understand the current state of bus-based parcel services and guide the
+        design of a better digital solution.
+      </p>
+      <p className="text-xs text-muted-foreground mt-3">
+        This should take approximately <strong>5–7 minutes</strong> to complete. Fields marked{" "}
+        <span className="text-red-500">*</span> are required.
+      </p>
+    </div>
+  </div>
+);
+
+const Section = ({ letter, title, children }: { letter: string; title: string; children: React.ReactNode }) => (
   <div className="bg-white rounded-2xl shadow-sm border border-border px-8 py-6 flex flex-col gap-5">
     <h2 className="font-display font-semibold text-base text-foreground border-b border-border pb-3">
-      {title}
+      <span className="text-primary font-bold mr-1">Section {letter}:</span> {title}
     </h2>
     {children}
   </div>
@@ -476,22 +435,26 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 const Field = ({
   label,
   required,
-  hint,
   children,
 }: {
   label: string;
   required?: boolean;
-  hint?: string;
   children: React.ReactNode;
 }) => (
   <div className="flex flex-col gap-1.5">
-    <Label className="text-sm font-medium text-foreground">
+    <Label className="text-sm font-medium text-foreground leading-relaxed">
       {label}
       {required && <span className="text-red-500 ml-0.5">*</span>}
     </Label>
-    {hint && <p className="text-xs text-muted-foreground -mt-1">{hint}</p>}
     {children}
   </div>
+);
+
+const RadioOption = ({ value }: { value: string }) => (
+  <label className="flex items-center gap-3 cursor-pointer rounded-lg border border-transparent hover:border-border hover:bg-muted/40 px-3 py-2 transition-colors">
+    <RadioGroupItem value={value} id={`radio-${value}`} />
+    <span className="text-sm text-foreground">{value}</span>
+  </label>
 );
 
 export default BookingForm;

@@ -52,7 +52,7 @@ const Navbar = () => {
               Pricing
             </button>
             <Link to="/book" className="text-muted-foreground hover:text-foreground transition-colors">
-              Book a Parcel
+              Research Survey
             </Link>
           </div>
 
@@ -114,7 +114,7 @@ const Navbar = () => {
                 className="text-muted-foreground hover:text-foreground transition-colors py-2"
                 onClick={() => setIsOpen(false)}
               >
-                Book a Parcel
+                Research Survey
               </Link>
               <div className="flex flex-col gap-2 pt-4">
                 <Button asChild variant="ghost" className="w-full">
