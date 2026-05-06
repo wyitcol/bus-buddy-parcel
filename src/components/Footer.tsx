@@ -1,4 +1,4 @@
-import { Bus, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { Bus, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -21,17 +21,6 @@ const Footer = () => {
             <p className="text-background/70 text-sm mb-6">
               Connecting communities through reliable parcel transportation via our nationwide bus network.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -83,11 +72,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-secondary flex-shrink-0" />
-                <span className="text-background/70 text-sm">+254 700 123 456</span>
+                <a href="tel:+254759831643" className="text-background/70 text-sm hover:text-background transition-colors">+254 759 831 643</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-secondary flex-shrink-0" />
-                <span className="text-background/70 text-sm">info@busparcel.co.ke</span>
+                <a href="mailto:davymango23@gmail.com" className="text-background/70 text-sm hover:text-background transition-colors">davymango23@gmail.com</a>
               </li>
             </ul>
           </div>
