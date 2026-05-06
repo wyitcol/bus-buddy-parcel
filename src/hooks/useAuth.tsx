@@ -10,11 +10,25 @@ interface AuthContextType {
   isAdmin: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signInWithGoogle: () => Promise<{ error: Error | null }>;
+  signInWithGoogle: () => Promise<{ error: Error | null; redirected?: boolean }>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const OAUTH_REDIRECT_KEY = "busparcel.oauth.redirect";
+
+const isLovableHosted = () => {
+  const hostname = window.location.hostname;
+  return hostname.endsWith(".lovable.app") || hostname.endsWith(".lovableproject.com");
+};
+
+const completePendingOAuthRedirect = () => {
+  const redirectPath = sessionStorage.getItem(OAUTH_REDIRECT_KEY);
+  if (redirectPath) {
+    sessionStorage.removeItem(OAUTH_REDIRECT_KEY);
+    window.location.hash = redirectPath;
+  }
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -45,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          completePendingOAuthRedirect();
           // Use setTimeout to avoid potential deadlocks
           setTimeout(() => checkAdminRole(session.user.id), 0);
         } else {
@@ -61,6 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
+        completePendingOAuthRedirect();
         checkAdminRole(session.user.id);
       }
       
@@ -93,6 +109,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signInWithGoogle = async () => {
+    sessionStorage.setItem(OAUTH_REDIRECT_KEY, "/admin");
+
+    if (!isLovableHosted()) {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: {
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (error) {
+        sessionStorage.removeItem(OAUTH_REDIRECT_KEY);
+      }
+
+      return { error, redirected: !error };
+    }
+
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
       extraParams: {
@@ -101,10 +137,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (result.redirected) {
-      return { error: null };
+      return { error: null, redirected: true };
     }
 
-    return { error: result.error ?? null };
+    if (result.error) {
+      sessionStorage.removeItem(OAUTH_REDIRECT_KEY);
+    }
+
+    return { error: result.error ?? null, redirected: false };
   };
 
   const signOut = async () => {

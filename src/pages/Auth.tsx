@@ -75,7 +75,7 @@ const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    const { error } = await signInWithGoogle();
+    const { error, redirected } = await signInWithGoogle();
     if (error) {
       toast({
         title: "Error signing in with Google",
@@ -83,6 +83,10 @@ const Auth = () => {
         variant: "destructive",
       });
       setIsGoogleLoading(false);
+      return;
+    }
+
+    if (redirected) {
       return;
     }
 
