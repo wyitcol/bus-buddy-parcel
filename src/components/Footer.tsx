@@ -1,4 +1,4 @@
-import { Bus, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { Bus, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -21,17 +21,6 @@ const Footer = () => {
             <p className="text-background/70 text-sm mb-6">
               Connecting communities through reliable parcel transportation via our nationwide bus network.
             </p>
-            <div className="flex gap-4">
-              <a href="https://www.facebook.com/busparcel" target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://twitter.com/busparcel" target="_blank" rel="noopener noreferrer" aria-label="Visit our Twitter profile" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="https://www.instagram.com/busparcel" target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram profile" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -83,11 +72,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-secondary flex-shrink-0" />
-                <a href="tel:+254700123456" className="text-background/70 text-sm hover:text-background transition-colors">+254 700 123 456</a>
+                <a href="tel:+254759831643" className="text-background/70 text-sm hover:text-background transition-colors">+254759831643</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-secondary flex-shrink-0" />
-                <a href="mailto:info@busparcel.co.ke" className="text-background/70 text-sm hover:text-background transition-colors">info@busparcel.co.ke</a>
+                <a href="mailto:davymango23@gmail.com" className="text-background/70 text-sm hover:text-background transition-colors">davymango23@gmail.com</a>
               </li>
             </ul>
           </div>
