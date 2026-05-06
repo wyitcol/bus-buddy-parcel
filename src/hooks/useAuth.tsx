@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
 import { User, Session } from "@supabase/supabase-js";
 
 interface AuthContextType {
@@ -16,6 +17,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const OAUTH_REDIRECT_KEY = "busparcel.oauth.redirect";
+const SELF_HOSTED_OAUTH_BROKER_URL =
+  "https://id-preview--e8292c41-4378-4352-a3e0-90efe570b6b4.lovable.app/~oauth/initiate";
+const selfHostedLovableAuth = createLovableAuth({
+  oauthBrokerUrl: SELF_HOSTED_OAUTH_BROKER_URL,
+});
 
 const isLovableHosted = () => {
   const hostname = window.location.hostname;
@@ -112,21 +118,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     sessionStorage.setItem(OAUTH_REDIRECT_KEY, "/admin");
 
     if (!isLovableHosted()) {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-          queryParams: {
-            prompt: "select_account",
-          },
+      const result = await selfHostedLovableAuth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+        extraParams: {
+          prompt: "select_account",
         },
       });
 
-      if (error) {
+      if (result.error) {
         sessionStorage.removeItem(OAUTH_REDIRECT_KEY);
+        return { error: result.error, redirected: false };
       }
 
-      return { error, redirected: !error };
+      if (result.redirected) {
+        return { error: null, redirected: true };
+      }
+
+      try {
+        await supabase.auth.setSession(result.tokens);
+        return { error: null, redirected: false };
+      } catch (e) {
+        sessionStorage.removeItem(OAUTH_REDIRECT_KEY);
+        return { error: e instanceof Error ? e : new Error(String(e)), redirected: false };
+      }
     }
 
     const result = await lovable.auth.signInWithOAuth("google", {
