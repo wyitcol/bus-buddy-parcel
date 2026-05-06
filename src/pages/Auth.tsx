@@ -82,7 +82,11 @@ const Auth = () => {
         description: error.message,
         variant: "destructive",
       });
+      setIsGoogleLoading(false);
+      return;
     }
+
+    navigate("/admin");
     setIsGoogleLoading(false);
   };
 
