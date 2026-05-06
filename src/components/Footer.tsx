@@ -22,13 +22,13 @@ const Footer = () => {
               Connecting communities through reliable parcel transportation via our nationwide bus network.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
+              <a href="https://www.facebook.com/busparcel" target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
+              <a href="https://twitter.com/busparcel" target="_blank" rel="noopener noreferrer" aria-label="Visit our Twitter profile" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
+              <a href="https://www.instagram.com/busparcel" target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram profile" className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -83,11 +83,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-secondary flex-shrink-0" />
-                <span className="text-background/70 text-sm">+254 700 123 456</span>
+                <a href="tel:+254700123456" className="text-background/70 text-sm hover:text-background transition-colors">+254 700 123 456</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-secondary flex-shrink-0" />
-                <span className="text-background/70 text-sm">info@busparcel.co.ke</span>
+                <a href="mailto:info@busparcel.co.ke" className="text-background/70 text-sm hover:text-background transition-colors">info@busparcel.co.ke</a>
               </li>
             </ul>
           </div>
