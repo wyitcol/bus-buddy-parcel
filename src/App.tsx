@@ -12,6 +12,7 @@ import Chapter2 from "./pages/Chapter2";
 import Chapter3 from "./pages/Chapter3";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import Client from "./pages/Client";
 import SendParcel from "./pages/SendParcel";
 import AllRoutes from "./pages/AllRoutes";
 import BookingForm from "./pages/BookingForm";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/chapter-3" element={<Chapter3 />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/client" element={<Client />} />
             <Route path="/send/:operator" element={<SendParcel />} />
             <Route path="/routes" element={<AllRoutes />} />
             <Route path="/book" element={<BookingForm />} />

@@ -39,10 +39,14 @@ const Admin = () => {
   const [editingParcel, setEditingParcel] = useState<Parcel | null>(null);
   const [paymentParcel, setPaymentParcel] = useState<{ id: string; trackingId: string; amount: number } | null>(null);
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
+    if (!loading) {
+      if (!user) {
+        navigate("/auth");
+      } else if (!isAdmin) {
+        navigate("/client");
+      }
     }
-  }, [user, loading, navigate]);
+  }, [user, isAdmin, loading, navigate]);
 
   const fetchParcels = async () => {
     setIsLoading(true);
