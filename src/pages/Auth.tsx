@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,9 +69,15 @@ const GoogleSignInButton = ({
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signUp, signInWithGoogle, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate(isAdmin ? "/admin" : "/client");
+    }
+  }, [user, isAdmin, loading, navigate]);
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
@@ -90,7 +96,6 @@ const Auth = () => {
       return;
     }
 
-    navigate("/admin");
     setIsGoogleLoading(false);
   };
 
@@ -115,7 +120,7 @@ const Auth = () => {
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
-      navigate("/admin");
+      // navigation handled by useEffect based on role
     }
     
     setIsLoading(false);
