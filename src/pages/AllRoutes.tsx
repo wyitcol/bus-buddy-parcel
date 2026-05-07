@@ -6,28 +6,28 @@ import Footer from "@/components/Footer";
 
 const allRoutes = [
   // Original popular routes
-  { from: "Nairobi", to: "Mombasa", duration: "8 hours", price: "KES 1,500", operator: "Tahmeed", departures: "Every 2 hours", popular: true },
-  { from: "Nairobi", to: "Kisumu", duration: "6 hours", price: "KES 1,200", operator: "Buscar", departures: "Every 3 hours", popular: true },
-  { from: "Nairobi", to: "Eldoret", duration: "5 hours", price: "KES 1,000", operator: "Mashpoa", departures: "4x daily", popular: false },
+  { from: "Nairobi", to: "Mombasa", duration: "8 hours", price: "KES 700", operator: "Tahmeed", departures: "Every 2 hours", popular: true },
+  { from: "Nairobi", to: "Kisumu", duration: "6 hours", price: "KES 700", operator: "Buscar", departures: "Every 3 hours", popular: true },
+  { from: "Nairobi", to: "Eldoret", duration: "5 hours", price: "KES 700", operator: "Mashpoa", departures: "4x daily", popular: false },
   { from: "Mombasa", to: "Malindi", duration: "2 hours", price: "KES 500", operator: "Tahmeed", departures: "Every hour", popular: false },
   { from: "Nairobi", to: "Nakuru", duration: "2.5 hours", price: "KES 600", operator: "Buscar", departures: "Every 2 hours", popular: true },
   { from: "Kisumu", to: "Kakamega", duration: "1.5 hours", price: "KES 400", operator: "Mashpoa", departures: "5x daily", popular: false },
   // New county routes
-  { from: "Nairobi", to: "Kisii", duration: "7 hours", price: "KES 1,300", operator: "Buscar", departures: "3x daily", popular: true },
-  { from: "Nairobi", to: "Kericho", duration: "5 hours", price: "KES 1,100", operator: "Mashpoa", departures: "4x daily", popular: false },
-  { from: "Nairobi", to: "Meru", duration: "5 hours", price: "KES 1,000", operator: "Tahmeed", departures: "Every 3 hours", popular: true },
+  { from: "Nairobi", to: "Kisii", duration: "7 hours", price: "KES 700", operator: "Buscar", departures: "3x daily", popular: true },
+  { from: "Nairobi", to: "Kericho", duration: "5 hours", price: "KES 700", operator: "Mashpoa", departures: "4x daily", popular: false },
+  { from: "Nairobi", to: "Meru", duration: "5 hours", price: "KES 700", operator: "Tahmeed", departures: "Every 3 hours", popular: true },
   { from: "Nairobi", to: "Nyeri", duration: "3 hours", price: "KES 700", operator: "Mashpoa", departures: "Every 2 hours", popular: false },
   { from: "Nairobi", to: "Embu", duration: "3 hours", price: "KES 650", operator: "Tahmeed", departures: "5x daily", popular: false },
-  { from: "Nairobi", to: "Garissa", duration: "7 hours", price: "KES 1,400", operator: "Buscar", departures: "2x daily", popular: false },
+  { from: "Nairobi", to: "Garissa", duration: "7 hours", price: "KES 700", operator: "Buscar", departures: "2x daily", popular: false },
   { from: "Nairobi", to: "Machakos", duration: "1.5 hours", price: "KES 350", operator: "Mashpoa", departures: "Every hour", popular: true },
   { from: "Nairobi", to: "Thika", duration: "1 hour", price: "KES 250", operator: "Tahmeed", departures: "Every 30 min", popular: true },
-  { from: "Eldoret", to: "Kapenguria (Pokot)", duration: "3 hours", price: "KES 800", operator: "Mashpoa", departures: "3x daily", popular: false },
+  { from: "Eldoret", to: "Kapenguria (Pokot)", duration: "3 hours", price: "KES 700", operator: "Mashpoa", departures: "3x daily", popular: false },
   { from: "Eldoret", to: "Kitale", duration: "2 hours", price: "KES 500", operator: "Buscar", departures: "Every 2 hours", popular: false },
   { from: "Kisumu", to: "Kisii", duration: "2.5 hours", price: "KES 600", operator: "Buscar", departures: "4x daily", popular: false },
   { from: "Mombasa", to: "Voi", duration: "3 hours", price: "KES 700", operator: "Tahmeed", departures: "Every 2 hours", popular: false },
-  { from: "Mombasa", to: "Lamu", duration: "6 hours", price: "KES 1,500", operator: "Tahmeed", departures: "2x daily", popular: false },
+  { from: "Mombasa", to: "Lamu", duration: "6 hours", price: "KES 700", operator: "Tahmeed", departures: "2x daily", popular: false },
   { from: "Nakuru", to: "Kericho", duration: "2.5 hours", price: "KES 550", operator: "Mashpoa", departures: "5x daily", popular: false },
-  { from: "Nairobi", to: "Narok", duration: "3 hours", price: "KES 750", operator: "Buscar", departures: "Every 2 hours", popular: false },
+  { from: "Nairobi", to: "Narok", duration: "3 hours", price: "KES 700", operator: "Buscar", departures: "Every 2 hours", popular: false },
 ];
 
 const operatorColors: Record<string, string> = {
