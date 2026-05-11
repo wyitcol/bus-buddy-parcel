@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const plans = [
   {
@@ -15,6 +16,7 @@ const plans = [
       "SMS notifications",
     ],
     popular: false,
+    cta: { label: "Get Started", to: "/send/tahmeed?plan=standard" },
   },
   {
     name: "Express",
@@ -30,6 +32,7 @@ const plans = [
       "Insurance included",
     ],
     popular: true,
+    cta: { label: "Get Started", to: "/send/buscar?plan=express" },
   },
   {
     name: "Business",
@@ -46,6 +49,7 @@ const plans = [
       "Door-to-door service",
     ],
     popular: false,
+    cta: { label: "Contact Sales", to: "/send/mashpoa?plan=business" },
   },
 ];
 
@@ -109,11 +113,12 @@ const Pricing = () => {
               </ul>
 
               <Button
+                asChild
                 variant={plan.popular ? "hero" : "outline"}
                 className="w-full"
                 size="lg"
               >
-                Get Started
+                <Link to={plan.cta.to}>{plan.cta.label}</Link>
               </Button>
             </div>
           ))}
