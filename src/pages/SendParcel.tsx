@@ -30,8 +30,17 @@ const SendParcel = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
 
-  const busOperator = (operator?.toLowerCase() as BusOperator) || "tahmeed";
+  const initialOperator = (operator?.toLowerCase() as BusOperator) || "tahmeed";
+  const [busOperator, setBusOperator] = useState<BusOperator>(
+    operatorMeta[initialOperator] ? initialOperator : "tahmeed",
+  );
   const meta = operatorMeta[busOperator];
+  const plan = searchParams.get("plan");
+
+  useEffect(() => {
+    const next = (operator?.toLowerCase() as BusOperator) || "tahmeed";
+    if (operatorMeta[next]) setBusOperator(next);
+  }, [operator]);
 
   const [step, setStep] = useState<"form" | "summary">("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -137,14 +146,31 @@ const SendParcel = () => {
               <Bus className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-display font-bold text-lg text-foreground">Send via {meta.label}</h1>
+              <h1 className="font-display font-bold text-lg text-foreground">
+                Send via {meta.label}
+                {plan && <span className="ml-2 text-xs font-medium text-muted-foreground capitalize">({plan} plan)</span>}
+              </h1>
               <div className="flex items-center gap-2">
                 <span className={`w-2 h-2 rounded-full ${meta.color}`} />
-                <span className="text-xs text-muted-foreground">Bus operator pre-selected</span>
+                <span className="text-xs text-muted-foreground">Switch operator below</span>
               </div>
             </div>
           </div>
           <div className="w-16" />
+        </div>
+        <div className="container mx-auto px-4 pb-3 flex flex-wrap gap-2">
+          {(Object.keys(operatorMeta) as BusOperator[]).map((op) => (
+            <Button
+              key={op}
+              size="sm"
+              variant={op === busOperator ? "default" : "outline"}
+              onClick={() => setBusOperator(op)}
+              className="gap-2"
+            >
+              <span className={`w-2 h-2 rounded-full ${operatorMeta[op].color}`} />
+              {operatorMeta[op].label}
+            </Button>
+          ))}
         </div>
       </header>
 
