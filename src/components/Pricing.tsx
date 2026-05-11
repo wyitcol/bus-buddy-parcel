@@ -16,7 +16,7 @@ const plans = [
       "SMS notifications",
     ],
     popular: false,
-    cta: { label: "Get Started", to: "/send/tahmeed?plan=standard" },
+    cta: { label: "Get Started", to: "/routes?plan=standard" },
   },
   {
     name: "Express",
@@ -32,7 +32,7 @@ const plans = [
       "Insurance included",
     ],
     popular: true,
-    cta: { label: "Get Started", to: "/send/buscar?plan=express" },
+    cta: { label: "Get Started", to: "/routes?plan=express" },
   },
   {
     name: "Business",
@@ -49,7 +49,7 @@ const plans = [
       "Door-to-door service",
     ],
     popular: false,
-    cta: { label: "Contact Sales", to: "/send/mashpoa?plan=business" },
+    cta: { label: "Contact Sales", to: "/routes?plan=business" },
   },
 ];
 
