@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Bus, Package, LogOut, Plus, Search, RefreshCw, Edit, CreditCard } from "lucide-react";
+import { Bus, Package, LogOut, Plus, Search, RefreshCw, Edit, CreditCard, Map } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -178,6 +178,10 @@ const Admin = () => {
                 Admin
               </Badge>
             )}
+            <Button variant="outline" size="sm" onClick={() => navigate("/admin/routes")}>
+              <Map className="w-4 h-4 mr-1" />
+              Manage Routes
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <Package className="w-5 h-5" />
             </Button>
