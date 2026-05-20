@@ -116,6 +116,48 @@ export type Database = {
         }
         Relationships: []
       }
+      routes: {
+        Row: {
+          active: boolean
+          bus_operator: Database["public"]["Enums"]["bus_operator"]
+          created_at: string
+          departures: string
+          destination_city: string
+          duration: string
+          id: string
+          origin_city: string
+          popular: boolean
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          bus_operator: Database["public"]["Enums"]["bus_operator"]
+          created_at?: string
+          departures: string
+          destination_city: string
+          duration: string
+          id?: string
+          origin_city: string
+          popular?: boolean
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          bus_operator?: Database["public"]["Enums"]["bus_operator"]
+          created_at?: string
+          departures?: string
+          destination_city?: string
+          duration?: string
+          id?: string
+          origin_city?: string
+          popular?: boolean
+          price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
