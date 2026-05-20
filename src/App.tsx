@@ -16,6 +16,7 @@ import Client from "./pages/Client";
 import SendParcel from "./pages/SendParcel";
 import AllRoutes from "./pages/AllRoutes";
 import BookingForm from "./pages/BookingForm";
+import AdminRoutes from "./pages/AdminRoutes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/chapter-3" element={<Chapter3 />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/routes" element={<AdminRoutes />} />
             <Route path="/client" element={<Client />} />
             <Route path="/send/:operator" element={<SendParcel />} />
             <Route path="/routes" element={<AllRoutes />} />
